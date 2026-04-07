@@ -16,16 +16,17 @@
 	
 	Используя подобие треугольников можем найти Z по формуле $$ Z = \frac{B \cdot d}{x - x'} = depth $$
 	
-	\section{Практическое применение}
+%	\section{Практическое применение}
 	
-	\subsection{openCV}
+	\section{openCV}
+	\subsection{Обзор на функции для нахождения несоответсвий и глубины}
 	В нем есть два метода поиска несоответсвия: 
 	\begin{itemize}
 		\item stereoBM
 		\item stereoSGBM
 	\end{itemize}
 	
- Принцип работы обоих разберем на stereoBM, так как принцип почти одинаковый, есть бегущая строчка с окном, в котором считывается наилучшее совпадение на левом и правом кадре, и далее уже по этим пикселям  считывает несоответствие и дальше мы получаем карту несоответвествия.
+ Принцип работы обоих разберем на примере stereoBM, так как принцип почти одинаковый, есть бегущая строчка с окном, в котором считывается наилучшее совпадение на левом и правом кадре, и далее уже по этим пикселям  считывает несоответствие и дальше мы получаем карту несоответвествия.
  Использование в коде происходит с помощью команд в кода:
 		\begin{lstlisting}
 			stereoBM = cv2.StereoBM_create(numDisparities=128, blockSize=25)
@@ -34,6 +35,7 @@
 		
 В первой строчке мы просто создаем объект stereoBM с параметрами, а в следующей строчке мы передаем в этот объект изображение с обоих камер и получаем карту несоответствий. Также у него есть параметры которые можно переделать по надобности.
 
+%TODO: написать что значат аргументы у функции  StereoBM_create
 
 
 В коде ниже указано как в дальнейшем имея карту несоответствий перейти к карте глубины
@@ -47,7 +49,7 @@
 
 \newpage{}
 
-\subsection{Сравнение методов представленных в OpenCV}
+%\subsection{Сравнение методов представленных в OpenCV}
 
 \begin{itemize}
 	\item stereoBM
@@ -93,5 +95,36 @@
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
+
+\subsection{Фото(несоответвствия и глубина)}
+
+Разберем на примере фото (рисунки \ref{fig:aloe_l} \ref{fig:aloe_r}) с бинокулярной камеры: 
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/aloeL.jpg}
+		\caption{Левая камера}
+		\label{fig:aloe_l}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/aloeR.jpg}
+		\caption{Правая камера}
+		\label{fig:aloe_r}
+	\end{minipage}
+\end{figure}
 	
+После, того как вы выполняем команды с  представленные выше получаем карту несоответсвтвий, представленная на (рисункe \ref{fig:disparity_bm_vs_sgbm}): 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{figs/disparity_bm_vs_sgbm.png}
+	\caption{карта несоответсвий}
+	\label{fig:disparity_bm_vs_sgbm}	
+\end{figure}
+	
+На рисунке видно что метод stereoSGBM точнее и у него меньше шума, но более долгая.  
+
 \end{document}
