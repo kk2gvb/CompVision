@@ -127,4 +127,16 @@
 	
 На рисунке видно что метод stereoSGBM точнее и у него меньше шума, но более долгая.  
 
+
+%TODO: Добавить надо сравнение для карты глубины то что то что оно было высчитано формулой которая сверху, потом 
+
+%TODO: напиши про это то что оно расскрашивается:
+
+%depthBM = cv2.equalizeHist(depthBM)
+%colorDepthBM = np.zeros((leftImage.shape[0], leftImage.shape[1], 3), dtype=``uint8'')
+%tmp = cv2.applyColorMap(depthBM, cv2.COLORMAP\_JET)
+%colorDepthBM[validPixelsBM] = tmp[validPixelsBM]
+
+
+
 \end{document}
