@@ -1,10 +1,11 @@
 \input{preamble}
+
 \title{Доклад}
 \date{}
 
 \begin{document}
 %	\maketitle
-	\section{Теория}
+	\section*{Теория}
 		
 	 \begin{figure}[h]
 	 	\centering
@@ -12,131 +13,152 @@
 	 	\caption{схема бинокулярного зрения}
 	 	\label{fig:screenshot001}
 	 \end{figure}
-	где f - фокусное расстояние между камерой, O, O' - две наши камеры, Z - реальное расстояние(глубина), d - несоответсвествие
+	$f$ - фокусное расстояние между камерой, $O$, $O'$ - две камеры, $Z$ - реальное расстояние до объекта (глубина), d - несоответсвествие
 	
 	Используя подобие треугольников можем найти Z по формуле $$ Z = \frac{B \cdot d}{x - x'} = depth $$
 	
 %	\section{Практическое применение}
 	
-	\section{openCV}
-	\subsection{Обзор на функции для нахождения несоответсвий и глубины}
-	В нем есть два метода поиска несоответсвия: 
-	\begin{itemize}
-		\item stereoBM
-		\item stereoSGBM
-	\end{itemize}
+	\section*{openCV}
+%	\subsection{Обзор на функции для нахождения несоответсвий и глубины}
+	В \texttt{openCV} есть два метода поиска несоответсвия: \texttt{stereoBM} и \texttt{stereoSGBM}.
 	
- Принцип работы обоих разберем на примере stereoBM, так как принцип почти одинаковый, есть бегущая строчка с окном, в котором считывается наилучшее совпадение на левом и правом кадре, и далее уже по этим пикселям  считывает несоответствие и дальше мы получаем карту несоответвествия.
- Использование в коде происходит с помощью команд в кода:
+	 Принцип работы обоих алогритмов идентичный. Мы сравниваем каждый кадр по двум кдрам (левой и правой). Кадры разбиваются на строки шириной \texttt{blockSize}, сравнение идет построчно. По строке слева направо двигается окно сравнения, с помощью которго считается наилучшее совпадение объекта на левом и правом кадре. После нахождения совпадения рассчитывается смещение объекта в пикселях, используя формулу, находится расстояние до объекта. Таким образом строится карта несоответствий.
+	 
+	 Использование в коде происходит с помощью следующих команд:
+	 
 		\begin{lstlisting}
 			stereoBM = cv2.StereoBM_create(numDisparities=128, blockSize=25)
 			disparityBM = stereoBM.compute(leftImage, rigthImage)
 		\end{lstlisting}
 		
-В первой строчке мы просто создаем объект stereoBM с параметрами, а в следующей строчке мы передаем в этот объект изображение с обоих камер и получаем карту несоответствий. Также у него есть параметры которые можно переделать по надобности.
+	\texttt{StereoBM\_create} создаеt объект \texttt{stereoBM} с параметрами \texttt{numDisparities} и \texttt{blockSize}, далее передаем в созданный объект изображение с обоих камер и получаем карту несоответствий. У объекта есть параметры которые можно настроить для более точной работы.
+	
+	Ниже показано как из карты несоответствий построить карту глубины.
 
-%TODO: написать что значат аргументы у функции  StereoBM_create
-
-
-В коде ниже указано как в дальнейшем имея карту несоответствий перейти к карте глубины
 	\begin{lstlisting}
 		depthBM = np.zeros(shape=leftImage.shape).astype(``uint8'')
 		depthBM[validPixelsBM] = (f * baseline) / 
 														 (scale * disparityBM[validPixelsBM])
 	\end{lstlisting}
 	
-Также есть возможность построить тепловую карту.
-
-\newpage{}
+%	Также есть возможность построить тепловую карту.
+	
+	\newpage{}
 
 %\subsection{Сравнение методов представленных в OpenCV}
-
-\begin{itemize}
-	\item stereoBM
-
-	\begin{itemize}
-		\item Плюсы
-		\begin{itemize}
-			\item Высокая скорость
-			\item Простая настройка
-			\item Низкие требования к железу
-		\end{itemize}
-	\end{itemize}
 	
-	\begin{itemize}
-		\item Минусы
-		\begin{itemize}
-			\item Шумная карта несоответствий
-			\item Провалы в однорожддных зонах
-			\item Артефакты на границах
-			\item Чувстветельность к освещению и калибровке
-		\end{itemize}
-	\end{itemize}
-	
-	
-	\item stereoSGBM
-	
-	\begin{itemize}
-		\item Плюсы
-		\begin{itemize}
-			\item Высокая точность
-			\item Сохранение границ объектов
-			\item Устойчивость к шуму и слабой текстуре
-			\item Предсказуемое поведение при правильной настройке
-		\end{itemize}
-	\end{itemize}
-	
-	\begin{itemize}
-		\item Минусы
-		\begin{itemize}
-			\item Вычислительно затратный
-			\item Больше параметров для точной настройки
-			\item Требует более сильное железо
-		\end{itemize}
-	\end{itemize}
-\end{itemize}
+%	\begin{tabular}{|p{2.8cm}|p{2.8cm}|p{2.8cm}|p{2.8cm}|}
+%	\begin{tabular}{\textwidth}{|c|c|c|c|}
+	\begin{tabular}{|>{\centering\arraybackslash}m{2.8cm}|>{\centering\arraybackslash}m{2.8cm}|>{\centering\arraybackslash}m{2.8cm}|>{\centering\arraybackslash}m{2.8cm}|}
+		\hline
+		\multicolumn{2}{|c|}{stereoBM} & \multicolumn{2}{|c|}{stereoSGBM} \\
+		\hline
+		Плюсы & Минусы & Плюсы & Минусы \\
+		\hline
+		Высокая скорость & Шумная карта несоответствий & Высокая точность & Вычислительно затратный \\
+		\hline
+		Простая настройка & Провалы в однородных зонах & Сохранение границ объектов & Больше параметров для точной настройки \\
+		\hline
+		Низкие требования к железу & Артефакты на границах & Устойчивость к шуму и слабой текстуре & Требует более сильное железо \\
+		\hline
+		& Чувствительность к освещению и калибровке & Предсказуемое поведение при правильной настройке & \\
+		\hline
+	\end{tabular}
 
-\subsection{Фото(несоответвствия и глубина)}
+%\begin{itemize}
+%	\item stereoBM
+%
+%	\begin{itemize}
+%		\item Плюсы
+%		\begin{itemize}
+%			\item Высокая скорость
+%			\item Простая настройка
+%			\item Низкие требования к железу
+%		\end{itemize}
+%	\end{itemize}
+%	
+%	\begin{itemize}
+%		\item Минусы
+%		\begin{itemize}
+%			\item Шумная карта несоответствий
+%			\item Провалы в однорожддных зонах
+%			\item Артефакты на границах
+%			\item Чувстветельность к освещению и калибровке
+%		\end{itemize}
+%	\end{itemize}
+	
+%	\item stereoSGBM
+%	
+%	\begin{itemize}
+%		\item Плюсы
+%		\begin{itemize}
+%			\item Высокая точность
+%			\item Сохранение границ объектов
+%			\item Устойчивость к шуму и слабой текстуре
+%			\item Предсказуемое поведение при правильной настройке
+%		\end{itemize}
+%	\end{itemize}
+%	
+%	\begin{itemize}
+%		\item Минусы
+%		\begin{itemize}
+%			\item Вычислительно затратный
+%			\item Больше параметров для точной настройки
+%			\item Требует более сильное железо
+%		\end{itemize}
+%	\end{itemize}
+%\end{itemize}
 
-Разберем на примере фото (рисунки \ref{fig:aloe_l} \ref{fig:aloe_r}) с бинокулярной камеры: 
-
-\begin{figure}[h]
-	\centering
-	\begin{minipage}{0.48\textwidth}
+	\subsection*{Карты несоответвствия и глубины}
+	
+	Разберем работу алгоритмов на примере, на рисунках \ref{fig:aloe_l} и \ref{fig:aloe_r} показаны снимки с левой и правой камеры соответсвенно.
+	
+	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/aloeL.jpg}
-		\caption{Левая камера}
-		\label{fig:aloe_l}
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.48\textwidth}
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=0.7\linewidth]{figs/aloeL.jpg}
+			\caption{Левая камера}
+			\label{fig:aloe_l}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=0.7\linewidth]{figs/aloeR.jpg}
+			\caption{Правая камера}
+			\label{fig:aloe_r}
+		\end{minipage}
+	\end{figure}
+		
+	Запустим алгоритмы со следующими параметрами: \texttt{numDisparities = 128} и \texttt{blockSize=25}. Получим карты несоответствий (рисунок \ref{fig:disparity_bm_vs_sgbm}). 
+	
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/aloeR.jpg}
-		\caption{Правая камера}
-		\label{fig:aloe_r}
-	\end{minipage}
-\end{figure}
+		\includegraphics[width=1\textwidth]{figs/disparity_bm_vs_sgbm.png}
+		\caption{карта несоответсвий}
+		\label{fig:disparity_bm_vs_sgbm}	
+	\end{figure}
 	
-После, того как вы выполняем команды с  представленные выше получаем карту несоответсвтвий, представленная на (рисункe \ref{fig:disparity_bm_vs_sgbm}): 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\textwidth]{figs/disparity_bm_vs_sgbm.png}
-	\caption{карта несоответсвий}
-	\label{fig:disparity_bm_vs_sgbm}	
-\end{figure}
+	Используя карту несоответствий строится карта глубины (рисунок \ref{fig:depth_bm_vs_sgbm}), каждая область карты закрашивается цветом, в зависимость от растояния от камеры. Видно, что при  использовании алогритма SGBM на карте глубины меньше шума. Также стоит заметить, что SGBM работает немного медленее, чем BM.
 	
-На рисунке видно что метод stereoSGBM точнее и у него меньше шума, но более долгая.  
-
-
-%TODO: Добавить надо сравнение для карты глубины то что то что оно было высчитано формулой которая сверху, потом 
-
-%TODO: напиши про это то что оно расскрашивается:
-
-%depthBM = cv2.equalizeHist(depthBM)
-%colorDepthBM = np.zeros((leftImage.shape[0], leftImage.shape[1], 3), dtype=``uint8'')
-%tmp = cv2.applyColorMap(depthBM, cv2.COLORMAP\_JET)
-%colorDepthBM[validPixelsBM] = tmp[validPixelsBM]
-
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{figs/depth_bm_vs_sgbm.png}
+		\caption{карта несоответсвий}
+		\label{fig:depth_bm_vs_sgbm}	
+	\end{figure}
+	
+	\section*{Video (not ready)}
+	
+	Протестируем работу алгоритма BM на примере видео. Запустим его с параметрами \texttt{numDisparity = 160, blockSize = 15, minDisparity = 2} (рисунок \ref{fig:bm_video_reference}).
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth]{figs/video_ref.png}
+		\caption{карта несоответсвий}
+		\label{fig:bm_video_reference}	
+	\end{figure}
 
 
 \end{document}
