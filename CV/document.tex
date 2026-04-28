@@ -1,142 +1,226 @@
 \input{preamble}
-\title{Доклад}
+\title{Определение глубины по стереоизображениям}
 \date{}
 
 \begin{document}
-%	\maketitle
+	
+	\maketitle
+	
 	\section{Теория}
-		
-	 \begin{figure}[h]
-	 	\centering
-	 	\includegraphics[width=0.7\linewidth]{screenshot001}
-	 	\caption{схема бинокулярного зрения}
-	 	\label{fig:screenshot001}
-	 \end{figure}
-	где f - фокусное расстояние между камерой, O, O' - две наши камеры, Z - реальное расстояние(глубина), d - несоответсвествие
 	
-	Используя подобие треугольников можем найти Z по формуле $$ Z = \frac{B \cdot d}{x - x'} = depth $$
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{./figs/theory}
+		\caption{Схема бинокулярного зрения}
+		\label{fig:stereo_scheme}
+	\end{figure}
 	
-%	\section{Практическое применение}
+	Рассмотрим систему из двух камер $O$ и $O'$, расстояние между которыми называется базисом и обозначается $B$.  
+	$f$ — фокусное расстояние камер.  
+	$Z$ — глубина (расстояние до объекта).  
 	
-	\section{openCV}
-	\subsection{Обзор на функции для нахождения несоответсвий и глубины}
-	В нем есть два метода поиска несоответсвия: 
+	При наблюдении одной и той же точки сцены её проекции на левом и правом изображениях имеют координаты $x$ и $x'$. Их разность называется \textbf{диспаратностью}:
+	\[
+	d = x - x'
+	\]
+	
+	Используя подобие треугольников (см. рис. \ref{fig:stereo_scheme}), получаем формулу для вычисления глубины:
+	
+	\[
+	Z = \frac{f \cdot B}{d}
+	\]
+	
+	Таким образом:
 	\begin{itemize}
-		\item stereoBM
-		\item stereoSGBM
+		\item чем больше диспаратность, тем ближе объект;
+		\item чем меньше диспаратность, тем дальше объект.
 	\end{itemize}
 	
- Принцип работы обоих разберем на примере stereoBM, так как принцип почти одинаковый, есть бегущая строчка с окном, в котором считывается наилучшее совпадение на левом и правом кадре, и далее уже по этим пикселям  считывает несоответствие и дальше мы получаем карту несоответвествия.
- Использование в коде происходит с помощью команд в кода:
-		\begin{lstlisting}
-			stereoBM = cv2.StereoBM_create(numDisparities=128, blockSize=25)
-			disparityBM = stereoBM.compute(leftImage, rigthImage)
-		\end{lstlisting}
-		
-В первой строчке мы просто создаем объект stereoBM с параметрами, а в следующей строчке мы передаем в этот объект изображение с обоих камер и получаем карту несоответствий. Также у него есть параметры которые можно переделать по надобности.
-
-%TODO: написать что значат аргументы у функции  StereoBM_create
-
-
-В коде ниже указано как в дальнейшем имея карту несоответствий перейти к карте глубины
+	\subsection{Эпиполярная геометрия}
+	
+	Перед вычислением диспаратности изображения проходят этап выравнивания (rectification), при котором соответствующие точки лежат на одной горизонтальной линии. Это позволяет искать соответствия только вдоль строк изображения, что существенно упрощает задачу.
+	
+\newpage{}
+	
+	\section{OpenCV}
+	
+	\subsection{Методы поиска диспаратности}
+	
+	В библиотеке OpenCV реализованы два основных метода:
+	\begin{itemize}
+		\item \textbf{StereoBM} — блочный метод (Block Matching);
+		\item \textbf{StereoSGBM} — полу-глобальный метод (Semi-Global Block Matching).
+	\end{itemize}
+	
+	\subsection{Принцип работы StereoBM}
+	
+	Метод StereoBM основан на поиске соответствующих блоков пикселей между левым и правым изображениями.  
+	Для каждого пикселя берётся окно фиксированного размера и ищется наиболее похожий участок на втором изображении.
+	
+	Сходство обычно оценивается с помощью метрики SAD (Sum of Absolute Differences).
+	
+	Пример использования:
+	
 	\begin{lstlisting}
-		depthBM = np.zeros(shape=leftImage.shape).astype(``uint8'')
-		depthBM[validPixelsBM] = (f * baseline) / 
-														 (scale * disparityBM[validPixelsBM])
+		stereoBM = cv2.StereoBM_create(
+		numDisparities=128, 
+		blockSize=25
+		)
+		
+		disparityBM = stereoBM.compute(leftImage, rightImage)
 	\end{lstlisting}
 	
-Также есть возможность построить тепловую карту.
-
+	Параметры:
+	\begin{itemize}
+		\item \texttt{numDisparities} — максимальное значение диспаратности (кратно 16);
+		\item \texttt{blockSize} — размер окна сопоставления (нечётное число).
+	\end{itemize}
+	
+	\subsection{Переход к карте глубины}
+	
+	После получения карты диспаратности глубина вычисляется по формуле:
+	
+	\begin{lstlisting}
+		depthBM = np.zeros_like(disparityBM, dtype=np.float32)
+		
+		validPixelsBM = disparityBM > 0
+		
+		depthBM[validPixelsBM] = (f * baseline) / disparityBM[validPixelsBM]
+	\end{lstlisting}
+	
+	Важно учитывать, что деление на ноль недопустимо, поэтому используются только валидные пиксели.
+	
+	\subsection{Визуализация глубины}
+	
+	Для удобства анализа карта глубины может быть преобразована в цветное изображение:
+	
+	\begin{lstlisting}
+		depthNorm = cv2.normalize(depthBM, None, 0, 255, cv2.NORM_MINMAX)
+		depthNorm = depthNorm.astype("uint8")
+		
+		colorDepth = cv2.applyColorMap(depthNorm, cv2.COLORMAP_JET)
+	\end{lstlisting}
+	
+	\newpage{}
+	
+	\section{Сравнение методов}
+	
+	\subsection{StereoBM}
+	
+	\textbf{Преимущества:}
+	\begin{itemize}
+		\item высокая скорость работы;
+		\item простота настройки;
+		\item низкие требования к вычислительным ресурсам.
+	\end{itemize}
+	
+	\textbf{Недостатки:}
+	\begin{itemize}
+		\item высокая шумность;
+		\item ошибки в однородных областях;
+		\item артефакты на границах;
+		\item чувствительность к освещению.
+	\end{itemize}
+	
+	\subsection{StereoSGBM}
+	
+	\textbf{Преимущества:}
+	\begin{itemize}
+		\item более высокая точность;
+		\item сохранение границ объектов;
+		\item устойчивость к шуму;
+		\item использование полу-глобальной оптимизации.
+	\end{itemize}
+	
+	\textbf{Недостатки:}
+	\begin{itemize}
+		\item более высокая вычислительная сложность;
+		\item сложность настройки параметров;
+		\item требует больше ресурсов.
+	\end{itemize}
+	
 \newpage{}
-
-%\subsection{Сравнение методов представленных в OpenCV}
-
-\begin{itemize}
-	\item stereoBM
-
-	\begin{itemize}
-		\item Плюсы
-		\begin{itemize}
-			\item Высокая скорость
-			\item Простая настройка
-			\item Низкие требования к железу
-		\end{itemize}
-	\end{itemize}
 	
-	\begin{itemize}
-		\item Минусы
-		\begin{itemize}
-			\item Шумная карта несоответствий
-			\item Провалы в однорожддных зонах
-			\item Артефакты на границах
-			\item Чувстветельность к освещению и калибровке
-		\end{itemize}
-	\end{itemize}
+	\section{Пример}
 	
+	Рассмотрим изображения с бинокулярной камеры (рис. \ref{fig:aloe_l}, \ref{fig:aloe_r}).
 	
-	\item stereoSGBM
-	
-	\begin{itemize}
-		\item Плюсы
-		\begin{itemize}
-			\item Высокая точность
-			\item Сохранение границ объектов
-			\item Устойчивость к шуму и слабой текстуре
-			\item Предсказуемое поведение при правильной настройке
-		\end{itemize}
-	\end{itemize}
-	
-	\begin{itemize}
-		\item Минусы
-		\begin{itemize}
-			\item Вычислительно затратный
-			\item Больше параметров для точной настройки
-			\item Требует более сильное железо
-		\end{itemize}
-	\end{itemize}
-\end{itemize}
-
-\subsection{Фото(несоответвствия и глубина)}
-
-Разберем на примере фото (рисунки \ref{fig:aloe_l} \ref{fig:aloe_r}) с бинокулярной камеры: 
-
-\begin{figure}[h]
-	\centering
-	\begin{minipage}{0.48\textwidth}
+	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/aloeL.jpg}
-		\caption{Левая камера}
-		\label{fig:aloe_l}
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.48\textwidth}
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figs/aloeL.jpg}
+			\caption{Левое изображение}
+			\label{fig:aloe_l}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figs/aloeR.jpg}
+			\caption{Правое изображение}
+			\label{fig:aloe_r}
+		\end{minipage}
+	\end{figure}
+	
+	После вычисления получаем карту диспаратности (рис. \ref{fig:disparity}):
+	
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/aloeR.jpg}
-		\caption{Правая камера}
-		\label{fig:aloe_r}
-	\end{minipage}
-\end{figure}
+		\includegraphics[width=1\textwidth]{figs/disparity_bm_vs_sgbm.png}
+		\caption{Карты диспаратности: StereoBM и StereoSGBM}
+		\label{fig:disparity}
+	\end{figure}
 	
-После, того как вы выполняем команды с  представленные выше получаем карту несоответсвтвий, представленная на (рисункe \ref{fig:disparity_bm_vs_sgbm}): 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\textwidth]{figs/disparity_bm_vs_sgbm.png}
-	\caption{карта несоответсвий}
-	\label{fig:disparity_bm_vs_sgbm}	
-\end{figure}
+	Из рисунка видно, что метод StereoSGBM даёт более гладкую и точную карту, тогда как StereoBM содержит больше шума.
 	
-На рисунке видно что метод stereoSGBM точнее и у него меньше шума, но более долгая.  
+\newpage{}
+	
+	\section{Обработка видео и анализ результатов}
+	
+	Для проверки работы алгоритма была выполнена обработка стереовидеопотока. Каждый кадр видео разделялся на левое и правое изображения, после чего применялась ректификация с использованием параметров калибровки.
+	
+	После выравнивания изображений вычислялась карта диспарантности с помощью алгоритма StereoSGBM. Для повышения качества результата использовалась постобработка с помощью WLS-фильтра, который позволяет уменьшить шум и сохранить границы объектов.
+	
+	Полученная карта диспарантности преобразовывалась в цветное изображение для удобства анализа. Далее выполнялось восстановление глубины сцены с использованием матрицы $Q$.
+	
+	На рис.~\ref{fig:video_result} приведён пример кадра, полученного при обработке видео.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/video_ref.png}
+		\caption{Пример карты глубины, полученной из видеопотока}
+		\label{fig:video_result}
+	\end{figure}
+	
+	Анализ полученного результата показывает:
+	
+	\begin{itemize}
+		\item Ближние объекты  имеют большую диспарантность и отображаются в тёплых цветах (красный, оранжевый);
+		\item Дальние области сцены соответствуют малым значениям диспарантности и отображаются в холодных цветах (зелёный, синий);
+		\item На однородных поверхностях наблюдается шум, связанный с отсутствием текстуры;
+		\item Использование WLS-фильтра позволило значительно сгладить карту глубины и уменьшить артефакты.
+	\end{itemize}
+	
+	Особое внимание следует уделить параметру \texttt{numDisparities}, который определяет диапазон поиска соответствий. Увеличение данного параметра позволяет корректно определять глубину для близко расположенных объектов, однако приводит к увеличению области, в которой невозможно вычислить диспарантность. Это связано с тем, что для крайних пикселей изображения отсутствуют соответствующие точки во втором изображении.
+	
+	Таким образом, выбор параметров алгоритма представляет собой компромисс между точностью определения глубины, устойчивостью к шуму и вычислительной сложностью.
+	
+	
+	\section{Вывод}
+	
+	В работе были рассмотрены методы определения глубины по стереоизображениям и реализован алгоритм обработки видеопотока с использованием библиотеки OpenCV.
+	
+	В ходе экспериментов было установлено, что:
+	
+	\begin{itemize}
+		\item Алгоритм StereoSGBM обеспечивает более точное и стабильное восстановление карты диспарантности по сравнению с методом StereoBM;
+		\item Качество результата существенно зависит от параметров алгоритма, в частности от \texttt{numDisparities} и \texttt{blockSize};
+		\item Увеличение \texttt{numDisparities} расширяет диапазон измеряемых глубин, но приводит к появлению невалидной области изображения;
+		\item Применение WLS-фильтра позволяет эффективно подавлять шум и улучшать визуальное качество карты глубины;
+		\item Ключевым фактором, влияющим на результат, является корректная калибровка и ректификация изображений.
+	\end{itemize}
+	
+	В целом, стереозрение позволяет эффективно восстанавливать глубину сцены, однако требует аккуратного выбора параметров и качественной предварительной обработки изображений.
 
-
-%TODO: Добавить надо сравнение для карты глубины то что то что оно было высчитано формулой которая сверху, потом 
-
-%TODO: напиши про это то что оно расскрашивается:
-
-%depthBM = cv2.equalizeHist(depthBM)
-%colorDepthBM = np.zeros((leftImage.shape[0], leftImage.shape[1], 3), dtype=``uint8'')
-%tmp = cv2.applyColorMap(depthBM, cv2.COLORMAP\_JET)
-%colorDepthBM[validPixelsBM] = tmp[validPixelsBM]
-
-
-
+	
 \end{document}

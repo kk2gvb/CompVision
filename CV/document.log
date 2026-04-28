@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.4.7)  7 APR 2026 22:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.4.7)  28 APR 2026 21:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1222,24 +1222,28 @@ Package hyperref Info: Link coloring ON on input line 5.
 Package pgfplots notification 'compat/show suggested version=true': document ha
 s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
-<screenshot001.png, id=23, 551.05875pt x 412.54124pt>
-File: screenshot001.png Graphic file (type png)
-<use screenshot001.png>
-Package pdftex.def Info: screenshot001.png  used on input line 11.
-(pdftex.def)             Requested size: 328.6279pt x 246.02847pt.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 17.
-
+LaTeX Font Info:    Trying to load font information for U+msa on input line 8.
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 17.
-
+LaTeX Font Info:    Trying to load font information for U+msb on input line 8.
 
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
+
+LaTeX Warning: No \author given.
+
+<./figs/theory.png, id=59, 627.34375pt x 477.785pt>
+File: ./figs/theory.png Graphic file (type png)
+<use ./figs/theory.png>
+Package pdftex.def Info: ./figs/theory.png  used on input line 13.
+(pdftex.def)             Requested size: 328.6279pt x 250.2941pt.
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./figs/theory.png>]
 LaTeX Font Info:    Trying to load font information for T2A+cmtt on input line 
-31.
+64.
 
 (/usr/share/texmf-dist/tex/latex/cyrillic/t2acmtt.fd
 File: t2acmtt.fd 2001/08/11 v1.0a Computer Modern Cyrillic font definitions
@@ -1249,23 +1253,27 @@ Package fancyhdr Warning: \footskip is too small (0.0pt):
 (fancyhdr)                Make it at least 12.0pt, for example:
 (fancyhdr)                \setlength{\footskip}{12.0pt}.
 
-[1
+[2]
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./screenshot001.png>]
-<figs/aloeL.jpg, id=50, 1286.8075pt x 1114.1625pt>
+Package fancyhdr Warning: \footskip is too small (0.0pt): 
+(fancyhdr)                Make it at least 12.0pt, for example:
+(fancyhdr)                \setlength{\footskip}{12.0pt}.
+
+[3]
+<figs/aloeL.jpg, id=109, 1286.8075pt x 1114.1625pt>
 File: figs/aloeL.jpg Graphic file (type jpg)
 <use figs/aloeL.jpg>
-Package pdftex.def Info: figs/aloeL.jpg  used on input line 107.
-(pdftex.def)             Requested size: 157.73999pt x 136.56685pt.
-<figs/aloeR.jpg, id=51, 1286.8075pt x 1114.1625pt>
+Package pdftex.def Info: figs/aloeL.jpg  used on input line 152.
+(pdftex.def)             Requested size: 202.80806pt x 175.58353pt.
+<figs/aloeR.jpg, id=110, 1286.8075pt x 1114.1625pt>
 File: figs/aloeR.jpg Graphic file (type jpg)
 <use figs/aloeR.jpg>
-Package pdftex.def Info: figs/aloeR.jpg  used on input line 114.
-(pdftex.def)             Requested size: 157.73999pt x 136.56685pt.
-<figs/disparity_bm_vs_sgbm.png, id=53, 462.528pt x 346.896pt>
+Package pdftex.def Info: figs/aloeR.jpg  used on input line 159.
+(pdftex.def)             Requested size: 202.80806pt x 175.58353pt.
+<figs/disparity_bm_vs_sgbm.png, id=112, 462.528pt x 346.896pt>
 File: figs/disparity_bm_vs_sgbm.png Graphic file (type png)
 <use figs/disparity_bm_vs_sgbm.png>
-Package pdftex.def Info: figs/disparity_bm_vs_sgbm.png  used on input line 123.
+Package pdftex.def Info: figs/disparity_bm_vs_sgbm.png  used on input line 169.
 
 (pdftex.def)             Requested size: 469.47049pt x 352.11952pt.
 
@@ -1274,41 +1282,60 @@ Package fancyhdr Warning: \footskip is too small (0.0pt):
 (fancyhdr)                Make it at least 12.0pt, for example:
 (fancyhdr)                \setlength{\footskip}{12.0pt}.
 
-[2 <./figs/aloeL.jpg> <./figs/aloeR.jpg>]
+[4 <./figs/aloeL.jpg> <./figs/aloeR.jpg> <./figs/disparity_bm_vs_sgbm.png>]
+<figs/video_ref.png, id=122, 1273.75874pt x 1027.84pt>
+File: figs/video_ref.png Graphic file (type png)
+<use figs/video_ref.png>
+Package pdftex.def Info: figs/video_ref.png  used on input line 190.
+(pdftex.def)             Requested size: 375.57782pt x 303.05333pt.
+
 
 Package fancyhdr Warning: \footskip is too small (0.0pt): 
 (fancyhdr)                Make it at least 12.0pt, for example:
 (fancyhdr)                \setlength{\footskip}{12.0pt}.
 
-[3 <./figs/disparity_bm_vs_sgbm.png>] (./document.aux)
+[5 <./figs/video_ref.png>]
+Overfull \hbox (8.0868pt too wide) in paragraph at lines 217--218
+[]\T2A/cmr/m/n/10 Качество ре-зуль-та-та су-ще-ствен-но за-ви-сит от па-ра-мет-
+ров ал-го-рит-ма, в част-но-сти от \T2A/cmtt/m/n/10 numDisparities
+ []
+
+
+Package fancyhdr Warning: \footskip is too small (0.0pt): 
+(fancyhdr)                Make it at least 12.0pt, for example:
+(fancyhdr)                \setlength{\footskip}{12.0pt}.
+
+[6] (./document.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `document.out' has not changed.
-(rerunfilecheck)             Checksum: 1A08A23FAA2FF07911184C27F05910B8;966.
+(rerunfilecheck)             Checksum: 6D8B307FA75D269AB56652CE8D446DBF;2229.
  ) 
 Here is how much of TeX's memory you used:
- 36143 strings out of 468939
- 797827 string characters out of 5461511
- 1407360 words of memory out of 5000000
- 64249 multiletter control sequences out of 15000+600000
- 635234 words of font info for 57 fonts, out of 8000000 for 9000
+ 36228 strings out of 468939
+ 799027 string characters out of 5461511
+ 1416360 words of memory out of 5000000
+ 64300 multiletter control sequences out of 15000+600000
+ 640684 words of font info for 76 fonts, out of 8000000 for 9000
  452 hyphenation exceptions out of 8191
- 107i,11n,110p,746b,1213s stack positions out of 10000i,1000n,20000p,200000b,200000s
- </home/admin/.texlive/texmf-var/fonts/pk/ljfour/lhcyr/lh-t2a/labx1000.600pk>
+ 107i,12n,110p,800b,1213s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ </home/admin/.texlive/texmf-var/fonts/pk/ljfour/lhcyr/lh-t2a/latt1000.600pk>
  </home/admin/.texlive/texmf-var/fonts/pk/ljfour/lhcyr/lh-t2a/latt0900.600pk> <
-/home/admin/.texlive/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk> </us
-r/share/texmf-dist/fonts/pk/ljfour/lh/lh-t2a/labx1200.600pk> </home/admin/.texl
-ive/texmf-var/fonts/pk/ljfour/lhcyr/lh-t2a/larm1000.600pk> </home/admin/.texliv
-e/texmf-var/fonts/pk/ljfour/lh/lh-t2a/labx1440.600pk></usr/share/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
-msy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on document.pdf (3 pages, 2197172 bytes).
+/usr/share/texmf-dist/fonts/pk/ljfour/lh/lh-t2a/labx1200.600pk> </home/admin/.t
+exlive/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk> </home/admin/.texl
+ive/texmf-var/fonts/pk/ljfour/lhcyr/lh-t2a/labx1000.600pk> </home/admin/.texliv
+e/texmf-var/fonts/pk/ljfour/lhcyr/lh-t2a/larm1000.600pk> </home/admin/.texlive/
+texmf-var/fonts/pk/ljfour/lh/lh-t2a/labx1440.600pk> </usr/share/texmf-dist/font
+s/pk/ljfour/lh/lh-t2a/larm1728.600pk></usr/share/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+r10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/
+share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
+Output written on document.pdf (6 pages, 1260030 bytes).
 PDF statistics:
- 272 PDF objects out of 1000 (max. 8388607)
- 90 compressed objects within 1 object stream
- 19 named destinations out of 1000 (max. 500000)
- 65 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 480 PDF objects out of 1000 (max. 8388607)
+ 163 compressed objects within 2 object streams
+ 43 named destinations out of 1000 (max. 500000)
+ 142 words of extra memory for PDF output out of 10000 (max. 10000000)
 
