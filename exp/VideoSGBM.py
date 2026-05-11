@@ -13,7 +13,7 @@ HALF_WIDTH = WIDTH // 2
 # ---- SGBM параметры ----
 minDisparity = 0
 numDisparities = 256  # кратно 16
-blockSize = 5
+blockSize = 3
 
 uniquenessRatio = 8
 speckleWindowSize = 100

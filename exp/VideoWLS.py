@@ -9,7 +9,7 @@ VIDEO_PATH = "90d_stereo_video_2.mp4"
 
 # ---- SGBM параметры ----
 minDisparity = 0
-numDisparities = 192
+numDisparities = 208
 blockSize = 5
 
 uniquenessRatio = 8
