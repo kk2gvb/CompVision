@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Application output
+results/output/
+
+# Videos and large data
+data/videos/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+*.vrb
+*.fls
+*.fdb_latexmk
+
+# OS temporary files
+.DS_Store
+Thumbs.db
+
+# Editor swap files
+*.swp
